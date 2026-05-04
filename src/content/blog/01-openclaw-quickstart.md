@@ -2,7 +2,7 @@
 title: '5 分钟上手 OpenClaw：把 AI 助手装进你的手机'
 description: '从零开始安装 OpenClaw，连接飞书/Telegram，5 分钟跑起来你的第一个 AI 助手。'
 pubDate: '2026-05-04'
-heroImage: '/blog-placeholder-1.jpg'
+heroImage: '../../assets/blog-placeholder-1.jpg'
 ---
 
 OpenClaw（小龙虾）是一个开源的个人 AI 助手框架，让你把 Claude、GPT 等大模型接入微信、飞书、Telegram，变成真正能帮你干活的私人助理。
