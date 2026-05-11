@@ -4,18 +4,17 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
+// All series with full post list
 const series = [
   {
     id: 'getting-started',
     emoji: '🚀',
     label: '入门启动',
     color: '#FF6B35',
-    tagline: '零基础，跟得上',
-    description: '从"这啥"到"跑起来了"，扫除恐惧感，建立正反馈。',
     posts: [
-      { title: 'OpenClaw 是什么？来龙去脉一次讲清楚', slug: '02-what-is-openclaw' },
-      { title: '5 分钟把它跑起来，最小闭环快速体验', slug: '03-5min-quickstart' },
-      { title: '核心概念：Gateway / Channel / Memory / Agent', slug: '04-concepts' },
+      { title: 'OpenClaw 是什么？来龙去脉一次讲清楚', slug: '02-what-is-openclaw', desc: '为什么它突然火了？和 ChatGPT 有什么区别？' },
+      { title: '5 分钟把它跑起来，最小闭环快速体验', slug: '03-5min-quickstart', desc: '跟着做，零基础也能 5 分钟跑起来' },
+      { title: '核心概念：Gateway / Channel / Memory / Agent', slug: '04-concepts', desc: '听不懂的行话？这篇全部大白话讲透' },
     ],
   },
   {
@@ -23,14 +22,12 @@ const series = [
     emoji: '🔧',
     label: '核心功能',
     color: '#4ECDC4',
-    tagline: '装好就用，真实有用',
-    description: '接飞书、设人格、配记忆、上技能——让它变成真正的日常工具。',
     posts: [
-      { title: '接起飞书 / Telegram，消息一发 AI 就动', slug: '05-connect-feishu-telegram' },
-      { title: '人格设定：SOUL.md / USER.md 怎么写', slug: '06-personality' },
-      { title: '记忆系统：它怎么记住你说的话', slug: '07-memory' },
-      { title: '定时任务：让它每天自动干活', slug: '08-auto-tasks' },
-      { title: 'Skills 技能系统：ClawHub 安装与使用', slug: '09-skills' },
+      { title: '接起飞书 / Telegram，消息一发 AI 就动', slug: '05-connect-feishu-telegram', desc: '让它变成你每天真正在用的工具' },
+      { title: '人格设定：SOUL.md / USER.md 怎么写', slug: '06-personality', desc: '让它像你肚子里的蛔虫，懂你' },
+      { title: '记忆系统：它怎么记住你说的话', slug: '07-memory', desc: '分层记忆架构，越用越懂你' },
+      { title: '定时任务：让它每天自动干活', slug: '08-auto-tasks', desc: '不用发消息，它自己会动' },
+      { title: 'Skills 技能系统：ClawHub 安装与使用', slug: '09-skills', desc: '给它装插件，能力原地升级' },
     ],
   },
   {
@@ -38,441 +35,497 @@ const series = [
     emoji: '🏗',
     label: '进阶应用',
     color: '#7B68EE',
-    tagline: '解锁完整能力',
-    description: '多智能体团队、安全配置、自定义开发——从使用者变成构建者。',
     posts: [
-      { title: '多智能体团队：一个 AI 变多个专业助理', slug: '10-multi-agent' },
-      { title: '安全使用：这些坑一定要避开', slug: '11-security' },
-      { title: '开发自己的 Skill：从零手把手', slug: '12-custom-skill' },
-      { title: '实战案例：搭一套完整的 AI 个人助理系统', slug: '13-case-study' },
+      { title: '多智能体团队：一个 AI 变多个专业助理', slug: '10-multi-agent', desc: '各司其职，互相协作' },
+      { title: '安全使用：这些坑一定要避开', slug: '11-security', desc: 'API Key 泄露、权限过大…踩过才懂' },
+      { title: '开发自己的 Skill：从零手把手', slug: '12-custom-skill', desc: '让它做任何你想要的事' },
+      { title: '实战案例：搭一套完整的 AI 个人助理系统', slug: '13-case-study', desc: '串联所有技能，真正每天在用' },
     ],
   },
 ];
-
-const totalPosts = series.reduce((sum, s) => sum + s.posts.length, 0);
 ---
 
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <style>
-      :global(html) {
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: var(--font-atkinson), sans-serif;
-      }
-      main {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-      }
+<head>
+  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  <style>
+    :global(html) { scroll-behavior: smooth; }
+    body { font-family: var(--font-atkinson), sans-serif; }
+    main { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
 
-      /* ── Hero ────────────────────────────────── */
-      .hero {
-        text-align: center;
-        padding: 5rem 0 4rem;
-        position: relative;
-      }
-      .hero-mascot {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        display: block;
-      }
-      .hero h1 {
-        font-size: clamp(2.5rem, 6vw, 4rem);
-        font-weight: 700;
-        margin: 0 0 0.5rem;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
-      }
-      .hero .subtitle {
-        font-size: 1.2rem;
-        color: rgb(var(--gray));
-        margin: 0 0 2rem;
-        line-height: 1.6;
-      }
-      .hero-badges {
-        display: flex;
-        justify-content: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        margin-bottom: 2.5rem;
-      }
-      .hero-badges span {
-        background: var(--bg-offset);
-        padding: 0.35rem 0.85rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        color: rgb(var(--gray-dark));
-      }
-      .hero-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgb(var(--accent));
-        color: white;
-        padding: 0.85rem 1.75rem;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: opacity 0.2s, transform 0.15s;
-      }
-      .hero-cta:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-      }
-      .hero-stats {
-        margin-top: 3rem;
-        display: flex;
-        justify-content: center;
-        gap: 3rem;
-        flex-wrap: wrap;
-      }
-      .hero-stat {
-        text-align: center;
-      }
-      .hero-stat .num {
-        font-size: 2rem;
-        font-weight: 700;
-        color: rgb(var(--accent));
-      }
-      .hero-stat .label {
-        font-size: 0.85rem;
-        color: rgb(var(--gray));
-      }
+    /* ── Topbar ─────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 0 1rem;
+      border-bottom: 1px solid var(--bg-offset);
+      margin-bottom: 2rem;
+    }
+    .topbar-brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .topbar-brand span { font-size: 1.4rem; }
+    .topbar-nav {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .topbar-nav li a {
+      text-decoration: none;
+      color: rgb(var(--gray-dark));
+      font-size: 0.9rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .topbar-nav li a:hover { background: var(--bg-offset); }
+    .topbar-nav li a.active { color: rgb(var(--accent)); font-weight: 600; }
 
-      /* ── Divider ────────────────────────────── */
-      .section-divider {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin: 3rem 0 2rem;
-      }
-      .section-divider h2 {
-        font-size: 1.4rem;
-        margin: 0;
-        white-space: nowrap;
-      }
-      .section-divider::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--bg-offset);
-      }
+    /* ── Hero ───────────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 2rem 0 2.5rem;
+      border-bottom: 1px solid var(--bg-offset);
+    }
+    .hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .hero-text h1 span { color: rgb(var(--accent)); }
+    .hero-text .subtitle {
+      font-size: 1.05rem;
+      color: rgb(var(--gray));
+      margin: 0 0 1.25rem;
+      line-height: 1.6;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .hero-badges span {
+      background: var(--bg-offset);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: rgb(var(--gray-dark));
+    }
+    .hero-badges span.highlight { background: rgb(var(--accent)); color: white; }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgb(var(--accent));
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.88; }
+    .hero-cta.secondary {
+      background: transparent;
+      color: rgb(var(--accent));
+      border: 1.5px solid rgb(var(--accent));
+    }
+    .hero-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-width: 220px;
+    }
+    .stat-card {
+      background: var(--bg-offset);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .stat-card .stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: rgb(var(--accent));
+      line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 0.85rem;
+      color: rgb(var(--gray-dark));
+      line-height: 1.3;
+    }
 
-      /* ── Series Cards ────────────────────────── */
-      .series-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-      }
-      .series-card {
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid var(--bg-offset);
-        transition: transform 0.2s, box-shadow 0.2s;
-        display: flex;
-        flex-direction: column;
-      }
-      .series-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-      }
-      .series-card-header {
-        padding: 1.25rem 1.5rem 1rem;
-        color: white;
-      }
-      .series-card-header .series-emoji {
-        font-size: 2rem;
-        display: block;
-        margin-bottom: 0.25rem;
-      }
-      .series-card-header .series-label {
-        font-size: 1.2rem;
-        font-weight: 700;
-        display: block;
-      }
-      .series-card-header .series-tagline {
-        font-size: 0.85rem;
-        opacity: 0.9;
-        display: block;
-        margin-top: 0.2rem;
-      }
-      .series-card-body {
-        padding: 1rem 1.5rem 1.5rem;
-        background: var(--bg-offset);
-        flex: 1;
-      }
-      .series-card-body p {
-        margin: 0 0 1rem;
-        font-size: 0.9rem;
-        color: rgb(var(--gray-dark));
-        line-height: 1.5;
-      }
-      .series-card-body ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .series-card-body li {
-        padding: 0.5rem 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
-      }
-      .series-card-body li:first-child {
-        border-top: none;
-        padding-top: 0;
-      }
-      .series-card-body a {
-        color: inherit;
-        text-decoration: none;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        display: block;
-        transition: color 0.15s;
-      }
-      .series-card-body a:hover {
-        color: rgb(var(--accent));
-      }
-      .series-card-body .post-arrow {
-        opacity: 0;
-        transition: opacity 0.15s;
-        margin-left: 0.3rem;
-      }
-      .series-card-body li:hover .post-arrow {
-        opacity: 1;
-      }
+    /* ── Section Title ──────────────────────── */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--bg-offset);
+      margin-left: 0.5rem;
+    }
 
-      /* ── Quick Start Banner ─────────────────── */
-      .quickstart-banner {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border-radius: 16px;
-        padding: 2.5rem 2rem;
-        margin: 2rem 0 3rem;
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        color: white;
-        flex-wrap: wrap;
-      }
-      .quickstart-banner .qs-icon {
-        font-size: 3.5rem;
-        flex-shrink: 0;
-      }
-      .quickstart-banner h3 {
-        margin: 0 0 0.35rem;
-        font-size: 1.4rem;
-      }
-      .quickstart-banner p {
-        margin: 0;
-        opacity: 0.8;
-        font-size: 0.95rem;
-      }
-      .quickstart-banner .qs-steps {
-        display: flex;
-        gap: 1.5rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-      }
-      .quickstart-banner .qs-step {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-size: 0.9rem;
-      }
-      .quickstart-banner .qs-step .num {
-        background: rgba(255,255,255,0.2);
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        flex-shrink: 0;
-      }
-      .quickstart-banner .qs-cta {
-        margin-left: auto;
-        background: white;
-        color: #1a1a2e;
-        padding: 0.7rem 1.4rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.95rem;
-        white-space: nowrap;
-        transition: opacity 0.2s;
-        flex-shrink: 0;
-      }
-      .quickstart-banner .qs-cta:hover {
-        opacity: 0.9;
-      }
+    /* ── All Tutorials ─────────────────────── */
+    .tutorials-all {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .tutorial-item {
+      background: var(--bg-offset);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1.5px solid transparent;
+    }
+    .tutorial-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      border-color: rgb(var(--accent));
+    }
+    .tutorial-item .t-emoji {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .tutorial-item .t-body { flex: 1; min-width: 0; }
+    .tutorial-item .t-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin: 0 0 0.2rem;
+      line-height: 1.3;
+    }
+    .tutorial-item:hover .t-title { color: rgb(var(--accent)); }
+    .tutorial-item .t-desc {
+      font-size: 0.78rem;
+      color: rgb(var(--gray));
+      margin: 0;
+      line-height: 1.4;
+    }
 
-      /* ── Why ───────────────────────────────── */
-      .why-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 1.5rem 0 3rem;
-      }
-      .why-item {
-        background: var(--bg-offset);
-        border-radius: 12px;
-        padding: 1.25rem;
-        text-align: center;
-      }
-      .why-item .why-emoji {
-        font-size: 1.8rem;
-        display: block;
-        margin-bottom: 0.5rem;
-      }
-      .why-item h4 {
-        margin: 0 0 0.3rem;
-        font-size: 0.95rem;
-      }
-      .why-item p {
-        margin: 0;
-        font-size: 0.85rem;
-        color: rgb(var(--gray));
-        line-height: 1.4;
-      }
+    /* ── Series Sections ───────────────────── */
+    .series-block {
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--bg-offset);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .series-block-header {
+      padding: 0.85rem 1.25rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .series-block-header .series-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .series-block-header .series-emoji { font-size: 1.5rem; }
+    .series-block-header .series-label {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .series-block-header .series-tagline {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+    .series-block-header .series-count {
+      background: rgba(255,255,255,0.2);
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+    .series-block-body { padding: 0.75rem; background: var(--bg-offset); }
+    .series-posts {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.6rem;
+    }
+    .series-post a {
+      background: white;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.15s;
+      border: 1.5px solid transparent;
+    }
+    .series-post a:hover {
+      border-color: currentColor;
+      transform: translateY(-1px);
+    }
+    .series-post .sp-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.5;
+      min-width: 1.4rem;
+    }
+    .series-post .sp-title {
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    .series-post a:hover .sp-title { color: rgb(var(--accent)); }
 
-      /* ── Footer ────────────────────────────── */
-      footer {
-        text-align: center;
-        padding: 3rem 0;
-        color: rgb(var(--gray));
-        font-size: 0.85rem;
-        border-top: 1px solid var(--bg-offset);
-        margin-top: 2rem;
-      }
-    </style>
-  </head>
+    /* ── Bottom CTA ────────────────────────── */
+    .cta-bottom {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2rem 0 3rem;
+      text-align: center;
+      color: white;
+    }
+    .cta-bottom h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.5rem;
+    }
+    .cta-bottom p {
+      margin: 0 0 1.5rem;
+      opacity: 0.75;
+      font-size: 0.95rem;
+    }
+    .cta-bottom a {
+      display: inline-block;
+      background: white;
+      color: #1a1a2e;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: opacity 0.2s;
+    }
+    .cta-bottom a:hover { opacity: 0.9; }
 
-  <body>
-    <Header />
-    <main>
+    /* ── Footer ────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: rgb(var(--gray));
+      font-size: 0.85rem;
+      border-top: 1px solid var(--bg-offset);
+    }
+  </style>
+</head>
 
-      <!-- Hero -->
-      <section class="hero">
-        <span class="hero-mascot">🦞</span>
-        <h1>StudyClaw</h1>
+<body>
+  <main>
+
+    <!-- Top Navigation -->
+    <nav class="topbar">
+      <a href="/" class="topbar-brand"><span>🦞</span> StudyClaw</a>
+      <ul class="topbar-nav">
+        <li><a href="/" class="active">首页</a></li>
+        <li><a href="/blog">全部教程</a></li>
+        <li><a href="/about">关于</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>OpenClaw <span>中文教程</span></h1>
         <p class="subtitle">
-          OpenClaw（小龙虾）中文教程<br />
-          从零开始，打造你的 AI 个人助理
+          从零开始，打造你的 AI 个人助理。<br/>
+          零基础可学，5 分钟跑起来，真正能用的实战内容。
         </p>
         <div class="hero-badges">
-          <span>📚 {totalPosts} 篇实战教程</span>
-          <span>🆓 完全免费</span>
-          <span>⚡ 5 分钟跑起来</span>
+          <span class="highlight">🆓 全部免费</span>
+          <span>⚡ 5 分钟上手</span>
           <span>🔧 飞书 / Telegram 已接入</span>
+          <span>📚 {series.reduce((s,g) => s + g.posts.length, 0)} 篇实战教程</span>
         </div>
-        <a href="/blog" class="hero-cta">
-          🚀 开始学习
-        </a>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="num">{totalPosts}</div>
-            <div class="label">篇教程</div>
-          </div>
-          <div class="hero-stat">
-            <div class="num">3</div>
-            <div class="label">个阶段</div>
-          </div>
-          <div class="hero-stat">
-            <div class="num">∞</div>
-            <div class="label">可免费使用</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Why -->
-      <div class="section-divider"><h2>💡 学完能做什么</h2></div>
-      <div class="why-grid">
-        <div class="why-item">
-          <span class="why-emoji">📅</span>
-          <h4>自动日程管理</h4>
-          <p>每天早上 8 点自动收到今日待办，不打开 App 也能掌握全天</p>
-        </div>
-        <div class="why-item">
-          <span class="why-emoji">📰</span>
-          <h4>AI 新闻简报</h4>
-          <p>自动抓取你关注的领域动态，整理成 3 条简报推送给你</p>
-        </div>
-        <div class="why-item">
-          <span class="why-emoji">📧</span>
-          <h4>邮件摘要</h4>
-          <p>每天上班前，重要邮件已标好优先级，不用一条条翻</p>
-        </div>
-        <div class="why-item">
-          <span class="why-emoji">💻</span>
-          <h4>代码助手</h4>
-          <p>帮你调试代码、查文档、写脚本，相当于 24 小时在线的同事</p>
-        </div>
-        <div class="why-item">
-          <span class="why-emoji">🖼️</span>
-          <h4>生图助手</h4>
-          <p>说一句话就能生成配图，文章、PPT、社媒都能用</p>
-        </div>
-        <div class="why-item">
-          <span class="why-emoji">📊</span>
-          <h4>股票监控</h4>
-          <p>设置价格提醒，跌破 / 突破某个价位第一时间通知</p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <a href="/blog" class="hero-cta">🚀 开始学习</a>
+          <a href="/blog/03-5min-quickstart" class="hero-cta secondary">⚡ 5分钟跑起来 →</a>
         </div>
       </div>
-
-      <!-- Quick Start -->
-      <div class="section-divider"><h2>⚡ 快速上手</h2></div>
-      <div class="quickstart-banner">
-        <span class="qs-icon">🦞</span>
-        <div>
-          <h3>5 分钟跑起来你的第一个 AI 助手</h3>
-          <p>不管你用 Mac / Windows / Linux，零基础也能跟做</p>
-          <div class="qs-steps">
-            <div class="qs-step"><span class="num">1</span> 安装 Node.js</div>
-            <div class="qs-step"><span class="num">2</span> npm install -g openclaw</div>
-            <div class="qs-step"><span class="num">3</span> openclaw onboard</div>
-            <div class="qs-step"><span class="num">4</span> 开始聊天</div>
-          </div>
+      <div class="hero-aside">
+        <div class="stat-card">
+          <div class="stat-num">{series.reduce((s,g) => s + g.posts.length, 0)}</div>
+          <div class="stat-label">篇实战教程<br/>全部免费</div>
         </div>
-        <a href="/blog/03-5min-quickstart" class="qs-cta">查看教程 →</a>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">阶段路径<br/>循序渐进</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">次使用<br/>无限制</div>
+        </div>
       </div>
+    </section>
 
-      <!-- Series -->
-      <div class="section-divider"><h2>📚 教程系列</h2></div>
+    <!-- All Tutorials Quick View -->
+    <h2 class="section-title">📖 全部教程 · {series.reduce((s,g) => s + g.posts.length, 0)} 篇</h2>
 
-      <div class="series-grid">
-        {series.map((s) => (
-          <div class="series-card">
-            <div class="series-card-header" style={`background: ${s.color};`}>
-              <span class="series-emoji">{s.emoji}</span>
-              <span class="series-label">{s.label}</span>
-              <span class="series-tagline">{s.tagline}</span>
+    <div class="tutorials-all">
+      <a href="/blog/02-what-is-openclaw" class="tutorial-item">
+        <span class="t-emoji">🚀</span>
+        <div class="t-body">
+          <p class="t-title">OpenClaw 是什么？来龙去脉一次讲清楚</p>
+          <p class="t-desc">为什么它突然火了？和 ChatGPT 有什么区别？</p>
+        </div>
+      </a>
+      <a href="/blog/03-5min-quickstart" class="tutorial-item">
+        <span class="t-emoji">⚡</span>
+        <div class="t-body">
+          <p class="t-title">5 分钟把它跑起来，最小闭环快速体验</p>
+          <p class="t-desc">跟着做，零基础也能 5 分钟跑起来</p>
+        </div>
+      </a>
+      <a href="/blog/04-concepts" class="tutorial-item">
+        <span class="t-emoji">🧠</span>
+        <div class="t-body">
+          <p class="t-title">核心概念：Gateway / Channel / Memory / Agent</p>
+          <p class="t-desc">听不懂的行话？这篇全部大白话讲透</p>
+        </div>
+      </a>
+      <a href="/blog/05-connect-feishu-telegram" class="tutorial-item">
+        <span class="t-emoji">🔧</span>
+        <div class="t-body">
+          <p class="t-title">接起飞书 / Telegram，消息一发 AI 就动</p>
+          <p class="t-desc">让它变成你每天真正在用的工具</p>
+        </div>
+      </a>
+      <a href="/blog/06-personality" class="tutorial-item">
+        <span class="t-emoji">💬</span>
+        <div class="t-body">
+          <p class="t-title">人格设定：SOUL.md / USER.md 怎么写</p>
+          <p class="t-desc">让它像你肚子里的蛔虫，懂你</p>
+        </div>
+      </a>
+      <a href="/blog/07-memory" class="tutorial-item">
+        <span class="t-emoji">🧩</span>
+        <div class="t-body">
+          <p class="t-title">记忆系统：它怎么记住你说的话</p>
+          <p class="t-desc">分层记忆架构，越用越懂你</p>
+        </div>
+      </a>
+      <a href="/blog/08-auto-tasks" class="tutorial-item">
+        <span class="t-emoji">⏰</span>
+        <div class="t-body">
+          <p class="t-title">定时任务：让它每天自动干活</p>
+          <p class="t-desc">不用发消息，它自己会动</p>
+        </div>
+      </a>
+      <a href="/blog/09-skills" class="tutorial-item">
+        <span class="t-emoji">🔌</span>
+        <div class="t-body">
+          <p class="t-title">Skills 技能系统：ClawHub 安装与使用</p>
+          <p class="t-desc">给它装插件，能力原地升级</p>
+        </div>
+      </a>
+      <a href="/blog/10-multi-agent" class="tutorial-item">
+        <span class="t-emoji">👥</span>
+        <div class="t-body">
+          <p class="t-title">多智能体团队：一个 AI 变多个专业助理</p>
+          <p class="t-desc">各司其职，互相协作</p>
+        </div>
+      </a>
+      <a href="/blog/11-security" class="tutorial-item">
+        <span class="t-emoji">🔒</span>
+        <div class="t-body">
+          <p class="t-title">安全使用：这些坑一定要避开</p>
+          <p class="t-desc">API Key 泄露、权限过大…踩过才懂</p>
+        </div>
+      </a>
+      <a href="/blog/12-custom-skill" class="tutorial-item">
+        <span class="t-emoji">⚙️</span>
+        <div class="t-body">
+          <p class="t-title">开发自己的 Skill：从零手把手</p>
+          <p class="t-desc">让它做任何你想要的事</p>
+        </div>
+      </a>
+      <a href="/blog/13-case-study" class="tutorial-item">
+        <span class="t-emoji">🚀</span>
+        <div class="t-body">
+          <p class="t-title">实战案例：搭一套完整的 AI 个人助理系统</p>
+          <p class="t-desc">串联所有技能，真正每天在用</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Series Detail Blocks -->
+    <h2 class="section-title">🗂 教程路径 · 分阶段学习</h2>
+
+    {series.map((s) => (
+      <div class="series-block">
+        <div class="series-block-header" style={`background: ${s.color};`}>
+          <div class="series-left">
+            <span class="series-emoji">{s.emoji}</span>
+            <div>
+              <div class="series-label">{s.label}</div>
+              <div class="series-tagline">{
+                s.id === 'getting-started' ? '零基础，跟得上，扫除恐惧感' :
+                s.id === 'core-features' ? '装好就用，真实有用的日常工具' :
+                '解锁完整能力，从使用者变构建者'
+              }</div>
             </div>
-            <div class="series-card-body">
-              <p>{s.description}</p>
-              <ul>
-                {s.posts.map((post) => (
-                  <li>
-                    <a href={`/blog/${post.slug}`}>
-                      {post.title}<span class="post-arrow"> →</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
-        ))}
+          <span class="series-count">{s.posts.length} 篇</span>
+        </div>
+        <div class="series-block-body">
+          <div class="series-posts">
+            {s.posts.map((post, i) => (
+              <div class="series-post">
+                <a href={`/blog/${post.slug}`}>
+                  <span class="sp-num">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="sp-title">{post.title}</span>
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+    ))}
 
-      <footer>
-        <p>🦞 StudyClaw — OpenClaw 中文教程 · 完全免费 · 持续更新</p>
-      </footer>
+    <!-- CTA -->
+    <div class="cta-bottom">
+      <h3>准备好开始了吗？</h3>
+      <p>5 分钟跑起来，你的第一条 AI 消息，就从现在开始。</p>
+      <a href="/blog/03-5min-quickstart">⚡ 立即开始 →</a>
+    </div>
 
-    </main>
-    <Footer />
-  </body>
+    <footer>
+      <p>🦞 StudyClaw — OpenClaw 中文教程 · 完全免费 · 持续更新</p>
+    </footer>
+
+  </main>
+  <Footer />
+</body>
 </html>
