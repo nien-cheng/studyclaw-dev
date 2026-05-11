@@ -7,107 +7,252 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// Define series structure
+const seriesConfig = [
+	{
+		id: 'getting-started',
+		label: '🚀 入门启动',
+		emoji: '🚀',
+		description: '零基础也能跟上的起步阶段。装好、跑起来、看到第一个回复，扫除恐惧感。',
+	},
+	{
+		id: 'core-features',
+		label: '🔧 核心功能',
+		emoji: '🔧',
+		description: '飞书接入、人格设定、记忆系统、定时任务、技能扩展——把 OpenClaw 变成真正的日常工具。',
+	},
+	{
+		id: 'advanced',
+		label: '🏗 进阶应用',
+		emoji: '🏗',
+		description: '多智能体团队、安全配置、自定义开发——解锁 OpenClaw 的完整能力。',
+	},
+];
+
+const allPosts = await getCollection('blog');
+
+// Sort by seriesOrder within each series
+const sorted = allPosts.sort((a, b) => {
+	const aOrder = (a.data.seriesOrder ?? 99) * 100 + (a.data.pubDate?.getTime() ?? 0);
+	const bOrder = (b.data.seriesOrder ?? 99) * 100 + (b.data.pubDate?.getTime() ?? 0);
+	return aOrder - bOrder;
+});
+
+// Group posts by series
+const grouped = seriesConfig.map((series) => ({
+	...series,
+	posts: sorted.filter((p) => p.data.series === series.id),
+}));
+
+// Standalone posts (no series)
+const standalone = sorted.filter((p) => !p.data.series);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`教程目录 | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				width: 960px;
+				max-width: 900px;
+				margin: 0 auto;
+				padding: 2rem 1rem;
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
+			.page-header {
 				text-align: center;
+				padding: 3rem 0 2rem;
 			}
-			ul li:first-child img {
-				width: 100%;
+			.page-header h1 {
+				font-size: 2.5rem;
+				margin-bottom: 0.75rem;
 			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
+			.page-header p {
+				color: rgb(var(--gray));
+				font-size: 1.1rem;
+				max-width: 600px;
+				margin: 0 auto;
+				line-height: 1.6;
 			}
-			ul li img {
+			.series-section {
+				margin-bottom: 4rem;
+			}
+			.series-header {
+				display: flex;
+				align-items: baseline;
+				gap: 0.75rem;
 				margin-bottom: 0.5rem;
+				padding-bottom: 0.5rem;
+				border-bottom: 2px solid var(--bg-offset);
+			}
+			.series-header h2 {
+				font-size: 1.5rem;
+				margin: 0;
+			}
+			.series-header .count {
+				color: rgb(var(--gray));
+				font-size: 0.85rem;
+			}
+			.series-desc {
+				color: rgb(var(--gray));
+				font-size: 0.9rem;
+				margin: 0 0 1.25rem;
+				line-height: 1.5;
+			}
+			.post-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+				gap: 1rem;
+			}
+			.post-card {
+				background: var(--bg-offset);
 				border-radius: 12px;
+				padding: 1.25rem;
+				text-decoration: none;
+				color: inherit;
+				transition: transform 0.15s, box-shadow 0.15s;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
 			}
-			ul li a {
-				display: block;
+			.post-card:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 			}
-			.title {
+			.post-card .order {
+				font-size: 0.75rem;
+				color: rgb(var(--accent));
+				font-weight: bold;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+			.post-card h3 {
 				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
+				font-size: 1rem;
+				line-height: 1.4;
+				font-weight: normal;
 			}
-			.date {
+			.post-card .desc {
+				color: rgb(var(--gray));
+				font-size: 0.85rem;
 				margin: 0;
+				line-height: 1.5;
+				flex: 1;
+			}
+			.post-card .date {
+				font-size: 0.8rem;
 				color: rgb(var(--gray));
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
+			.standalone-section {
+				margin-top: 3rem;
+			}
+			.standalone-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.standalone-list li {
+				padding: 0.75rem 0;
+				border-bottom: 1px solid var(--bg-offset);
+			}
+			.standalone-list a {
+				color: inherit;
+				text-decoration: none;
+				display: flex;
+				justify-content: space-between;
+				gap: 1rem;
+				align-items: baseline;
+			}
+			.standalone-list a:hover h4 {
 				color: rgb(var(--accent));
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			.standalone-list h4 {
+				margin: 0;
+				font-weight: normal;
+				font-size: 1rem;
 			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
+			.standalone-list .date {
+				color: rgb(var(--gray));
+				font-size: 0.85rem;
+				white-space: nowrap;
+			}
+			.series-nav {
+				display: flex;
+				gap: 0.5rem;
+				flex-wrap: wrap;
+				margin-bottom: 2rem;
+			}
+			.series-nav a {
+				background: var(--bg-offset);
+				padding: 0.4rem 0.9rem;
+				border-radius: 20px;
+				text-decoration: none;
+				color: rgb(var(--gray-dark));
+				font-size: 0.9rem;
+				transition: background 0.15s;
+			}
+			.series-nav a:hover {
+				background: rgb(var(--accent));
+				color: white;
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
+			<header class="page-header">
+				<h1>📚 OpenClaw 教程系列</h1>
+				<p>
+					从零开始，打造你的 AI 个人助理。<br />
+					分三阶段，循序渐进，每一个概念都讲透，每一步都能跟着做。
+				</p>
+			</header>
+
+			<!-- Series navigation -->
+			<nav class="series-nav">
+				<a href="#getting-started">🚀 入门启动</a>
+				<a href="#core-features">🔧 核心功能</a>
+				<a href="#advanced">🏗 进阶应用</a>
+			</nav>
+
+			{grouped.map((series) => (
+				series.posts.length > 0 && (
+					<section class="series-section" id={series.id}>
+						<div class="series-header">
+							<h2>{series.emoji} {series.label}</h2>
+							<span class="count">共 {series.posts.length} 篇</span>
+						</div>
+						<p class="series-desc">{series.description}</p>
+						<div class="post-grid">
+							{series.posts.map((post) => (
+								<a href={`/blog/${post.id}/`} class="post-card">
+									<span class="order">第 {post.data.seriesOrder} 篇</span>
+									<h3>{post.data.title}</h3>
+									<p class="desc">{post.data.description}</p>
+									<span class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</span>
+								</a>
+							))}
+						</div>
+					</section>
+				)
+			))}
+
+			{standalone.length > 0 && (
+				<section class="standalone-section">
+					<h2 style="margin-bottom: 1rem;">📎 其他文章</h2>
+					<ul class="standalone-list">
+						{standalone.map((post) => (
 							<li>
 								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
+									<h4>{post.data.title}</h4>
+									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
 								</a>
 							</li>
-						))
-					}
-				</ul>
-			</section>
+						))}
+					</ul>
+				</section>
+			)}
 		</main>
 		<Footer />
 	</body>
