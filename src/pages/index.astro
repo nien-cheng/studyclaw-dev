@@ -3,180 +3,476 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const series = [
+  {
+    id: 'getting-started',
+    emoji: '🚀',
+    label: '入门启动',
+    color: '#FF6B35',
+    tagline: '零基础，跟得上',
+    description: '从"这啥"到"跑起来了"，扫除恐惧感，建立正反馈。',
+    posts: [
+      { title: 'OpenClaw 是什么？来龙去脉一次讲清楚', slug: '02-what-is-openclaw' },
+      { title: '5 分钟把它跑起来，最小闭环快速体验', slug: '03-5min-quickstart' },
+      { title: '核心概念：Gateway / Channel / Memory / Agent', slug: '04-concepts' },
+    ],
+  },
+  {
+    id: 'core-features',
+    emoji: '🔧',
+    label: '核心功能',
+    color: '#4ECDC4',
+    tagline: '装好就用，真实有用',
+    description: '接飞书、设人格、配记忆、上技能——让它变成真正的日常工具。',
+    posts: [
+      { title: '接起飞书 / Telegram，消息一发 AI 就动', slug: '05-connect-feishu-telegram' },
+      { title: '人格设定：SOUL.md / USER.md 怎么写', slug: '06-personality' },
+      { title: '记忆系统：它怎么记住你说的话', slug: '07-memory' },
+      { title: '定时任务：让它每天自动干活', slug: '08-auto-tasks' },
+      { title: 'Skills 技能系统：ClawHub 安装与使用', slug: '09-skills' },
+    ],
+  },
+  {
+    id: 'advanced',
+    emoji: '🏗',
+    label: '进阶应用',
+    color: '#7B68EE',
+    tagline: '解锁完整能力',
+    description: '多智能体团队、安全配置、自定义开发——从使用者变成构建者。',
+    posts: [
+      { title: '多智能体团队：一个 AI 变多个专业助理', slug: '10-multi-agent' },
+      { title: '安全使用：这些坑一定要避开', slug: '11-security' },
+      { title: '开发自己的 Skill：从零手把手', slug: '12-custom-skill' },
+      { title: '实战案例：搭一套完整的 AI 个人助理系统', slug: '13-case-study' },
+    ],
+  },
+];
+
+const totalPosts = series.reduce((sum, s) => sum + s.posts.length, 0);
 ---
 
 <!doctype html>
 <html lang="zh-CN">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				max-width: 800px;
-				margin: 0 auto;
-				padding: 2rem 1rem;
-			}
-			.hero {
-				text-align: center;
-				padding: 4rem 0 3rem;
-			}
-			.hero h1 {
-				font-size: 3rem;
-				margin-bottom: 1rem;
-				line-height: 1.2;
-			}
-			.hero .subtitle {
-				font-size: 1.25rem;
-				color: rgb(var(--gray));
-				margin-bottom: 2rem;
-				max-width: 600px;
-				margin-left: auto;
-				margin-right: auto;
-			}
-			.hero .cta {
-				display: inline-block;
-				background: rgb(var(--accent));
-				color: white;
-				padding: 0.75rem 1.5rem;
-				border-radius: 8px;
-				text-decoration: none;
-				font-weight: bold;
-				transition: opacity 0.2s;
-			}
-			.hero .cta:hover {
-				opacity: 0.85;
-			}
-			.features {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: 1.5rem;
-				margin: 3rem 0;
-			}
-			.feature {
-				background: var(--bg-offset);
-				border-radius: 12px;
-				padding: 1.5rem;
-			}
-			.feature h3 {
-				margin: 0 0 0.5rem;
-				font-size: 1.1rem;
-			}
-			.feature p {
-				color: rgb(var(--gray));
-				margin: 0;
-				font-size: 0.95rem;
-				line-height: 1.5;
-			}
-			.recent-posts {
-				margin: 4rem 0 2rem;
-			}
-			.recent-posts h2 {
-				font-size: 1.5rem;
-				margin-bottom: 1.5rem;
-			}
-			.post-list {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-			}
-			.post-list li {
-				padding: 0.75rem 0;
-				border-bottom: 1px solid var(--bg-offset);
-			}
-			.post-list li:last-child {
-				border-bottom: none;
-			}
-			.post-list a {
-				color: inherit;
-				text-decoration: none;
-				display: flex;
-				justify-content: space-between;
-				align-items: baseline;
-				gap: 1rem;
-			}
-			.post-list a:hover h4 {
-				color: rgb(var(--accent));
-			}
-			.post-list h4 {
-				margin: 0;
-				font-weight: normal;
-				font-size: 1rem;
-			}
-			.post-list .date {
-				color: rgb(var(--gray));
-				font-size: 0.85rem;
-				white-space: nowrap;
-			}
-			.emoji {
-				font-size: 1.2em;
-				margin-right: 0.3em;
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style>
+      :global(html) {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font-atkinson), sans-serif;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
 
-	<body>
-		<Header />
-		<main>
-			<section class="hero">
-				<h1>🧑🚀 StudyClaw</h1>
-				<p class="subtitle">
-					OpenClaw（小龙虾）中文教程 — 从零开始，打造你的 AI 个人助理。
-					不炒概念，只讲能跑起来的实战。
-				</p>
-				<a href="/blog" class="cta">开始学习 →</a>
-			</section>
+      /* ── Hero ────────────────────────────────── */
+      .hero {
+        text-align: center;
+        padding: 5rem 0 4rem;
+        position: relative;
+      }
+      .hero-mascot {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .hero .subtitle {
+        font-size: 1.2rem;
+        color: rgb(var(--gray));
+        margin: 0 0 2rem;
+        line-height: 1.6;
+      }
+      .hero-badges {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 2.5rem;
+      }
+      .hero-badges span {
+        background: var(--bg-offset);
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: rgb(var(--gray-dark));
+      }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgb(var(--accent));
+        color: white;
+        padding: 0.85rem 1.75rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: opacity 0.2s, transform 0.15s;
+      }
+      .hero-cta:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+      .hero-stats {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+      }
+      .hero-stat {
+        text-align: center;
+      }
+      .hero-stat .num {
+        font-size: 2rem;
+        font-weight: 700;
+        color: rgb(var(--accent));
+      }
+      .hero-stat .label {
+        font-size: 0.85rem;
+        color: rgb(var(--gray));
+      }
 
-			<section class="features">
-				<div class="feature">
-					<h3>⚡ 快速上手</h3>
-					<p>5 分钟跑起来，不用懂代码也能装好。</p>
-				</div>
-				<div class="feature">
-					<h3>🧠 深入原理</h3>
-					<p>Gateway / Memory / Skills / Agent，核心概念全讲透。</p>
-				</div>
-				<div class="feature">
-					<h3>🔧 拿来就用</h3>
-					<p>飞书接入、定时任务、搜索技能，全部配好。</p>
-				</div>
-				<div class="feature">
-					<h3>🔒 安全第一</h3>
-					<p>API Key 管理、权限控制、避坑指南。</p>
-				</div>
-			</section>
+      /* ── Divider ────────────────────────────── */
+      .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 3rem 0 2rem;
+      }
+      .section-divider h2 {
+        font-size: 1.4rem;
+        margin: 0;
+        white-space: nowrap;
+      }
+      .section-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--bg-offset);
+      }
 
-			<section class="recent-posts">
-				<h2>📖 最新文章</h2>
-				<ul class="post-list">
-					<li>
-						<a href="/blog/13-case-study">
-							<h4>🚀 实战案例：用 OpenClaw 搭一套我的 AI 个人助理系统</h4>
-							<span class="date">2026-05-11</span>
-						</a>
-					</li>
-					<li>
-						<a href="/blog/12-custom-skill">
-							<h4>⚙️ 开发自己的 Skill：让 OpenClaw 做任何你想要的事</h4>
-							<span class="date">2026-05-11</span>
-						</a>
-					</li>
-					<li>
-						<a href="/blog/11-security">
-							<h4>🔒 安全使用 OpenClaw：这些坑一定要避开</h4>
-							<span class="date">2026-05-11</span>
-						</a>
-					</li>
-					<li>
-						<a href="/blog/10-multi-agent">
-							<h4>👥 多智能体团队：多个助手协作</h4>
-							<span class="date">2026-05-11</span>
-						</a>
-					</li>
-				</ul>
-				<p style="margin-top:1rem; text-align:right;">
-					<a href="/blog">查看全部文章 →</a>
-				</p>
-			</section>
-		</main>
-		<Footer />
-	</body>
+      /* ── Series Cards ────────────────────────── */
+      .series-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .series-card {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--bg-offset);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+      .series-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      }
+      .series-card-header {
+        padding: 1.25rem 1.5rem 1rem;
+        color: white;
+      }
+      .series-card-header .series-emoji {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      .series-card-header .series-label {
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: block;
+      }
+      .series-card-header .series-tagline {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        display: block;
+        margin-top: 0.2rem;
+      }
+      .series-card-body {
+        padding: 1rem 1.5rem 1.5rem;
+        background: var(--bg-offset);
+        flex: 1;
+      }
+      .series-card-body p {
+        margin: 0 0 1rem;
+        font-size: 0.9rem;
+        color: rgb(var(--gray-dark));
+        line-height: 1.5;
+      }
+      .series-card-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .series-card-body li {
+        padding: 0.5rem 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+      }
+      .series-card-body li:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+      .series-card-body a {
+        color: inherit;
+        text-decoration: none;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        display: block;
+        transition: color 0.15s;
+      }
+      .series-card-body a:hover {
+        color: rgb(var(--accent));
+      }
+      .series-card-body .post-arrow {
+        opacity: 0;
+        transition: opacity 0.15s;
+        margin-left: 0.3rem;
+      }
+      .series-card-body li:hover .post-arrow {
+        opacity: 1;
+      }
+
+      /* ── Quick Start Banner ─────────────────── */
+      .quickstart-banner {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        margin: 2rem 0 3rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        color: white;
+        flex-wrap: wrap;
+      }
+      .quickstart-banner .qs-icon {
+        font-size: 3.5rem;
+        flex-shrink: 0;
+      }
+      .quickstart-banner h3 {
+        margin: 0 0 0.35rem;
+        font-size: 1.4rem;
+      }
+      .quickstart-banner p {
+        margin: 0;
+        opacity: 0.8;
+        font-size: 0.95rem;
+      }
+      .quickstart-banner .qs-steps {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .quickstart-banner .qs-step {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+      }
+      .quickstart-banner .qs-step .num {
+        background: rgba(255,255,255,0.2);
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+      .quickstart-banner .qs-cta {
+        margin-left: auto;
+        background: white;
+        color: #1a1a2e;
+        padding: 0.7rem 1.4rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        transition: opacity 0.2s;
+        flex-shrink: 0;
+      }
+      .quickstart-banner .qs-cta:hover {
+        opacity: 0.9;
+      }
+
+      /* ── Why ───────────────────────────────── */
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0 3rem;
+      }
+      .why-item {
+        background: var(--bg-offset);
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+      }
+      .why-item .why-emoji {
+        font-size: 1.8rem;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .why-item h4 {
+        margin: 0 0 0.3rem;
+        font-size: 0.95rem;
+      }
+      .why-item p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: rgb(var(--gray));
+        line-height: 1.4;
+      }
+
+      /* ── Footer ────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 3rem 0;
+        color: rgb(var(--gray));
+        font-size: 0.85rem;
+        border-top: 1px solid var(--bg-offset);
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+
+      <!-- Hero -->
+      <section class="hero">
+        <span class="hero-mascot">🦞</span>
+        <h1>StudyClaw</h1>
+        <p class="subtitle">
+          OpenClaw（小龙虾）中文教程<br />
+          从零开始，打造你的 AI 个人助理
+        </p>
+        <div class="hero-badges">
+          <span>📚 {totalPosts} 篇实战教程</span>
+          <span>🆓 完全免费</span>
+          <span>⚡ 5 分钟跑起来</span>
+          <span>🔧 飞书 / Telegram 已接入</span>
+        </div>
+        <a href="/blog" class="hero-cta">
+          🚀 开始学习
+        </a>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">{totalPosts}</div>
+            <div class="label">篇教程</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">3</div>
+            <div class="label">个阶段</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">∞</div>
+            <div class="label">可免费使用</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why -->
+      <div class="section-divider"><h2>💡 学完能做什么</h2></div>
+      <div class="why-grid">
+        <div class="why-item">
+          <span class="why-emoji">📅</span>
+          <h4>自动日程管理</h4>
+          <p>每天早上 8 点自动收到今日待办，不打开 App 也能掌握全天</p>
+        </div>
+        <div class="why-item">
+          <span class="why-emoji">📰</span>
+          <h4>AI 新闻简报</h4>
+          <p>自动抓取你关注的领域动态，整理成 3 条简报推送给你</p>
+        </div>
+        <div class="why-item">
+          <span class="why-emoji">📧</span>
+          <h4>邮件摘要</h4>
+          <p>每天上班前，重要邮件已标好优先级，不用一条条翻</p>
+        </div>
+        <div class="why-item">
+          <span class="why-emoji">💻</span>
+          <h4>代码助手</h4>
+          <p>帮你调试代码、查文档、写脚本，相当于 24 小时在线的同事</p>
+        </div>
+        <div class="why-item">
+          <span class="why-emoji">🖼️</span>
+          <h4>生图助手</h4>
+          <p>说一句话就能生成配图，文章、PPT、社媒都能用</p>
+        </div>
+        <div class="why-item">
+          <span class="why-emoji">📊</span>
+          <h4>股票监控</h4>
+          <p>设置价格提醒，跌破 / 突破某个价位第一时间通知</p>
+        </div>
+      </div>
+
+      <!-- Quick Start -->
+      <div class="section-divider"><h2>⚡ 快速上手</h2></div>
+      <div class="quickstart-banner">
+        <span class="qs-icon">🦞</span>
+        <div>
+          <h3>5 分钟跑起来你的第一个 AI 助手</h3>
+          <p>不管你用 Mac / Windows / Linux，零基础也能跟做</p>
+          <div class="qs-steps">
+            <div class="qs-step"><span class="num">1</span> 安装 Node.js</div>
+            <div class="qs-step"><span class="num">2</span> npm install -g openclaw</div>
+            <div class="qs-step"><span class="num">3</span> openclaw onboard</div>
+            <div class="qs-step"><span class="num">4</span> 开始聊天</div>
+          </div>
+        </div>
+        <a href="/blog/03-5min-quickstart" class="qs-cta">查看教程 →</a>
+      </div>
+
+      <!-- Series -->
+      <div class="section-divider"><h2>📚 教程系列</h2></div>
+
+      <div class="series-grid">
+        {series.map((s) => (
+          <div class="series-card">
+            <div class="series-card-header" style={`background: ${s.color};`}>
+              <span class="series-emoji">{s.emoji}</span>
+              <span class="series-label">{s.label}</span>
+              <span class="series-tagline">{s.tagline}</span>
+            </div>
+            <div class="series-card-body">
+              <p>{s.description}</p>
+              <ul>
+                {s.posts.map((post) => (
+                  <li>
+                    <a href={`/blog/${post.slug}`}>
+                      {post.title}<span class="post-arrow"> →</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <footer>
+        <p>🦞 StudyClaw — OpenClaw 中文教程 · 完全免费 · 持续更新</p>
+      </footer>
+
+    </main>
+    <Footer />
+  </body>
 </html>
